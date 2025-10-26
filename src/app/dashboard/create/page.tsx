@@ -4,6 +4,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CreateProjectDialog } from "@/components/create-project-dialog";
+import ProjectGrid from "@/components/file-list";
 
 export default function DashboardPage() {
   const { user, isAuthenticated, isLoading } = useAuthStore();
@@ -27,6 +28,7 @@ export default function DashboardPage() {
           </div>
           <CreateProjectDialog />
         </div>
+        <ProjectGrid />
       </div>
     </div>
   );

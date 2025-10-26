@@ -279,9 +279,7 @@ export function CreateProjectDialog() {
             <div
               className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium",
-                step >= 1
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-200 text-gray-500"
+                step >= 1 ? "bg-green-500 text-white" : "bg-gray-200 text-black"
               )}
             >
               1
@@ -289,7 +287,7 @@ export function CreateProjectDialog() {
             <div className="w-12 h-1 bg-gray-200">
               <div
                 className={cn(
-                  "h-1 bg-green-600 transition-all",
+                  "h-1 bg-green-500 transition-all",
                   step >= 2 ? "w-full" : "w-0"
                 )}
               />
@@ -297,9 +295,7 @@ export function CreateProjectDialog() {
             <div
               className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium",
-                step >= 2
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-200 text-gray-500"
+                step >= 2 ? "bg-green-500 text-white" : "bg-gray-200 text-black"
               )}
             >
               2
@@ -308,14 +304,10 @@ export function CreateProjectDialog() {
         </div>
 
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-center">
             {step === 1 && "Create GitHub Repository"}
             {step === 2 && "Upload Files & Set Timeline"}
           </DialogTitle>
-          <DialogDescription>
-            {step === 1 && "Create a new GitHub repository for your project"}
-            {step === 2 && "Upload your code and configure commit generation"}
-          </DialogDescription>
         </DialogHeader>
 
         {/* Step 1: Create Repository */}
@@ -323,7 +315,7 @@ export function CreateProjectDialog() {
           <Form {...step1Form}>
             <form
               onSubmit={step1Form.handleSubmit(handleStep1Submit)}
-              className="space-y-4"
+              className="space-y-6"
             >
               <FormField
                 control={step1Form.control}
@@ -332,7 +324,11 @@ export function CreateProjectDialog() {
                   <FormItem>
                     <FormLabel>Project Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="my-awesome-project" {...field} />
+                      <Input
+                        placeholder="my-awesome-project"
+                        className="text-foreground"
+                        {...field}
+                      />
                     </FormControl>
                     <FormDescription>
                       This will be your GitHub repository name
@@ -363,11 +359,10 @@ export function CreateProjectDialog() {
               <DialogFooter>
                 <Button
                   type="submit"
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-green-500 hover:bg-green-600 text-white"
                   disabled={isLoading}
                 >
                   {isLoading ? "Creating..." : "Create Repository"}
-                  <GitBranch className="ml-2 h-4 w-4" />
                 </Button>
               </DialogFooter>
             </form>
@@ -384,7 +379,7 @@ export function CreateProjectDialog() {
               {/* File Upload */}
               <div className="space-y-2">
                 <FormLabel>Upload Project Files</FormLabel>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors">
+                <div className="border-2 border-gray-600 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
                   <Input
                     type="file"
                     accept=".zip,application/zip,application/x-zip,application/x-zip-compressed,application/octet-stream"
@@ -393,30 +388,30 @@ export function CreateProjectDialog() {
                     id="project-file"
                   />
                   <label htmlFor="project-file" className="cursor-pointer">
-                    <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                    <p className="text-sm font-medium">
-                      Click to upload ZIP file
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Upload your project as a ZIP file
-                    </p>
-                    {selectedFile && (
+                    {selectedFile ? (
                       <p className="text-xs text-green-600 mt-2">
                         {selectedFile.name}
                       </p>
+                    ) : (
+                      <>
+                        <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                        <p className="text-sm font-medium">
+                          Click to upload ZIP file
+                        </p>
+                      </>
                     )}
                   </label>
                 </div>
               </div>
 
               {/* Timeline */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <FormField
                   control={step2Form.control}
                   name="startDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Start Date (Optional)</FormLabel>
+                      <FormLabel>Start Date</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -456,7 +451,7 @@ export function CreateProjectDialog() {
                   name="endDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>End Date (Optional)</FormLabel>
+                      <FormLabel>End Date</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -497,7 +492,7 @@ export function CreateProjectDialog() {
                 name="desiredCommitCount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Desired Commit Count (Optional)</FormLabel>
+                    <FormLabel>Desired Commit </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -520,11 +515,10 @@ export function CreateProjectDialog() {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-green-600 hover:bg-green-700 text-white"
                   disabled={isLoading || !selectedFile}
                 >
                   {isLoading ? "Uploading..." : "Complete Setup"}
-                  <FileText className="ml-2 h-4 w-4" />
                 </Button>
               </DialogFooter>
             </form>
