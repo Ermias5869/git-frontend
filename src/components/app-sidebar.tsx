@@ -2,16 +2,15 @@
 
 import * as React from "react";
 import {
+  IconBell,
   IconCamera,
-  IconChartBar,
   IconDashboard,
   IconFileAi,
   IconFileDescription,
-  IconFolder,
   IconHelp,
   IconSearch,
   IconSettings,
-  IconUsers,
+  IconUser,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -31,23 +30,18 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/dashboard/home",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
-      title: "Projects",
-      url: "/dashboard/projects",
-      icon: IconFolder,
-    },
-    {
-      title: "Analytics",
-      url: "/dashboard/analytics",
-      icon: IconChartBar,
+      title: "Notifications",
+      url: "/dashboard/notifications",
+      icon: IconBell,
     },
     {
       title: "Profiles",
       url: "/dashboard/profiles",
-      icon: IconUsers,
+      icon: IconUser,
     },
   ],
   navClouds: [

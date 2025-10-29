@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function ProjectGrid() {
   const [projects, setProjects] = useState([]);
@@ -53,12 +54,13 @@ export default function ProjectGrid() {
           </p>
         ) : (
           projects.map((project) => (
-            <div
+            <Link
+              href={`/dashboard/projects/${project.id}`}
               key={project.id}
-              className="flex flex-col items-center justify-center p-4  "
+              className="flex flex-col items-center justify-center p-4  hover:bg-foreground/10 rounded-lg transition-colors duration-200"
             >
               <Image
-                src="/folder-icon.jpg"
+                src="/folder-1.png"
                 alt="Folder"
                 width={150}
                 height={150}
@@ -67,7 +69,7 @@ export default function ProjectGrid() {
               <p className="text-sm font-medium text-foreground text-center truncate w-full">
                 {project.name}
               </p>
-            </div>
+            </Link>
           ))
         )}
       </div>

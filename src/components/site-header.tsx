@@ -16,16 +16,6 @@ export function SiteHeader() {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <ModeToggle />
-        <div className="ml-auto flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="hidden sm:flex bg-green-500 hover:bg-green-400 active:bg-green-600 text-primary-foreground"
-            onClick={logout}
-          >
-            Sign Out
-          </Button>
-        </div>
       </div>
     </header>
   );

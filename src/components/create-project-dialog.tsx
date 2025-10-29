@@ -31,13 +31,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  CalendarIcon,
-  FolderOpen,
-  Upload,
-  FileText,
-  GitBranch,
-} from "lucide-react";
+import { CalendarIcon, Upload } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -267,10 +261,7 @@ export function CreateProjectDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-700 text-white">
-          <FolderOpen className="mr-2 h-4 w-4" />
-          Create New Project
-        </Button>
+        <Button>Create New Project</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         {/* Step Indicator */}
@@ -357,11 +348,7 @@ export function CreateProjectDialog() {
               />
 
               <DialogFooter>
-                <Button
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white"
-                  disabled={isLoading}
-                >
+                <Button type="submit" disabled={isLoading}>
                   {isLoading ? "Creating..." : "Create Repository"}
                 </Button>
               </DialogFooter>
@@ -389,9 +376,7 @@ export function CreateProjectDialog() {
                   />
                   <label htmlFor="project-file" className="cursor-pointer">
                     {selectedFile ? (
-                      <p className="text-xs text-green-600 mt-2">
-                        {selectedFile.name}
-                      </p>
+                      <p className="text-xs  mt-2">{selectedFile.name}</p>
                     ) : (
                       <>
                         <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
@@ -513,11 +498,7 @@ export function CreateProjectDialog() {
                 <Button type="button" variant="outline" onClick={handleBack}>
                   Back
                 </Button>
-                <Button
-                  type="submit"
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                  disabled={isLoading || !selectedFile}
-                >
+                <Button type="submit" disabled={isLoading || !selectedFile}>
                   {isLoading ? "Uploading..." : "Complete Setup"}
                 </Button>
               </DialogFooter>

@@ -15,7 +15,7 @@ export function Navbar() {
 
         <div className="flex items-center space-x-4">
           <Link
-            href="/dashboard"
+            href="/pricing"
             className={buttonVariants({
               variant: "ghost",
               size: "sm",

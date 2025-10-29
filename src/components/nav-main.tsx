@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
+import { IconCirclePlusFilled, type Icon } from "@tabler/icons-react";
 
 import {
   SidebarGroup,
@@ -27,7 +27,7 @@ export function NavMain({
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
               tooltip="Quick Create"
-              className="bg-green-500 text-primary-foreground hover:bg-green-400 hover:text-primary-foreground active:bg-green-600 active:text-primary-foreground min-w-8 duration-200 ease-linear"
+              className="bg-foreground text-primary-foreground hover:bg-foreground/20 w-full"
               asChild
             >
               <Link href="/dashboard/create">

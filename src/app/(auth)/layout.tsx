@@ -9,8 +9,7 @@ interface PublicLayoutProps {
 
 export default function PublicLayout({ children }: PublicLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <LoginNavbar />
+    <div className="min-h-scree">
       <main>{children}</main>
     </div>
   );
