@@ -12,12 +12,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Star, Zap, Crown, Sparkles, Loader2 } from "lucide-react";
+import {
+  Check,
+  Star,
+  Zap,
+  Crown,
+  Sparkles,
+  Loader2,
+  ArrowLeft,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuthStore } from "@/stores/auth-store";
+import { RedirectManager } from "@/lib/redirect";
+import Link from "next/link";
 
 // Zod schema for payment validation
 const paymentSchema = z.object({
@@ -63,11 +73,14 @@ export default function PricingPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [userSubscription, setUserSubscription] =
     useState<UserSubscription | null>(null);
-  // Redirect unauthenticated users to login
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      toast.info("Please log in to view pricing plans");
-      router.push("/login");
+      RedirectManager.setRedirectPath("/pricing");
+      setShouldRedirect(true);
+      router.push("/login?redirect=/pricing");
+      return;
     }
   }, [isAuthenticated, authLoading, router]);
 
@@ -103,9 +116,9 @@ export default function PricingPage() {
 
   const fetchPlans = async () => {
     try {
-      console.log("Fetching plans from:", `${API_BASE_URL}/api/payment/plans`);
+      console.log("Fetching plans from:", `${API_BASE_URL}/payment/plans`);
 
-      const response = await fetch(`${API_BASE_URL}/api/payment/plans`, {
+      const response = await fetch(`${API_BASE_URL}/payment/plans`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -196,7 +209,7 @@ export default function PricingPage() {
   const fetchUserSubscription = async () => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/payment/subscription/status`,
+        `${API_BASE_URL}/payment/subscription/status`,
         {
           method: "GET",
           credentials: "include",
@@ -219,12 +232,20 @@ export default function PricingPage() {
       console.error("Failed to fetch subscription:", error);
     }
   };
-
-  const handlePlanSelect = (planId: string) => {
-    console.log("Selected plan:", planId);
-    console.log("Plan price:", plans.find((p) => p.id === planId)?.price);
-    setSelectedPlan(planId);
-  };
+  if (authLoading || !isAuthenticated || shouldRedirect) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+          <p className="text-muted-foreground">
+            {authLoading
+              ? "Checking authentication..."
+              : "Redirecting to login..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const getPlanIcon = (planId: string) => {
     switch (planId) {
@@ -293,14 +314,10 @@ export default function PricingPage() {
     return getPlanLevel(planId) < getCurrentPlanLevel();
   };
 
-  const isUpgrade = (planId: string) => {
-    return getPlanLevel(planId) > getCurrentPlanLevel();
-  };
-
   const handlePlanAction = async (planId: string) => {
     if (!user) {
       toast.error("Please log in to continue");
-      router.push("/auth/login");
+      router.push("/login");
       return;
     }
 
@@ -343,7 +360,7 @@ export default function PricingPage() {
 
     if (!user) {
       toast.error("Please log in to continue");
-      router.push("/auth/login");
+      router.push("/login");
       return;
     }
 
@@ -378,10 +395,10 @@ export default function PricingPage() {
 
       console.log(
         "Sending payment data to:",
-        `${API_BASE_URL}/api/payment/initialize`
+        `${API_BASE_URL}/payment/initialize`
       );
 
-      const response = await fetch(`${API_BASE_URL}/api/payment/initialize`, {
+      const response = await fetch(`${API_BASE_URL}/payment/initialize`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -460,289 +477,311 @@ export default function PricingPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      {/* Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold tracking-tight mb-4">
-          Choose Your Plan
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Start with our free plan and upgrade as you grow. All plans include
-          core features with no hidden fees.
-        </p>
-      </div>
-
-      {/* Current Plan Badge */}
-      {userSubscription && (
-        <div className="text-center mb-20">
-          <Badge variant="secondary" className="px-4 py-2 text-sm">
-            Current Plan: {userSubscription.currentPlan}
-            {userSubscription.isActive &&
-              userSubscription.daysRemaining > 0 && (
-                <span className="ml-2">
-                  • {userSubscription.daysRemaining} days remaining
-                </span>
-              )}
-          </Badge>
+    <>
+      <div>
+        {/* Back to Home Button */}
+        <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
+          <Button variant="outline" className="rounded-full" asChild>
+            <Link href="/">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
         </div>
-      )}
-
-      {/* Pricing Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        {plans.map((plan) => (
-          <Card
-            key={plan.id}
-            className={`relative transition-all duration-200 hover:scale-105 hover:shadow-lg ${
-              selectedPlan === plan.id ? "ring-2 ring-primary" : ""
-            } ${
-              isCurrentPlan(plan.id) ? "ring-2 ring-green-500" : ""
-            } ${getPlanColor(plan.id)}`}
-          >
-            {/* Popular Badge for Pro */}
-            {plan.id === "pro" && (
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-blue-500 text-foreground px-4 py-2">
-                  Most Popular
-                </Badge>
-              </div>
-            )}
-
-            {/* Current Plan Badge */}
-            {isCurrentPlan(plan.id) && (
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-green-500 text-foreground px-4 py-2">
-                  Current Plan
-                </Badge>
-              </div>
-            )}
-
-            <CardHeader
-              className={`text-center pb-4 ${getPlanGradient(
-                plan.id
-              )} rounded-t-lg`}
-            >
-              <div className="flex justify-center mb-4">
-                <div className="p-3 rounded-full bg-background">
-                  {getPlanIcon(plan.id)}
-                </div>
-              </div>
-              <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-              <p className="text-foreground">{plan.description}</p>
-
-              <div className="mt-4">
-                <span className="text-4xl font-bold">
-                  {formatPrice(plan.price)}
-                </span>
-                {plan.price > 0 && (
-                  <span className="text-foreground">/month</span>
-                )}
-              </div>
-            </CardHeader>
-
-            <CardContent className="">
-              <ul className="space-y-6 mb-20">
-                {plan.features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Plan Limits */}
-              <div className="mt-6 p-4 bg-muted rounded-lg">
-                <h4 className="font-semibold text-sm mb-2">Plan Limits:</h4>
-                <div className="space-y-1 text-xs text-muted-foreground">
-                  <div>
-                    • Projects:{" "}
-                    {plan.maxProjects === -1
-                      ? "Unlimited"
-                      : `${plan.maxProjects}/month`}
-                  </div>
-                  <div>
-                    • Commits:{" "}
-                    {plan.maxCommitsPerProject === -1
-                      ? "Unlimited"
-                      : `Up to ${plan.maxCommitsPerProject}/project`}
-                  </div>
-                  <div>
-                    • File Size:{" "}
-                    {plan.maxFileSizeMB === -1
-                      ? "Unlimited"
-                      : `Up to ${plan.maxFileSizeMB}MB`}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-
-            <CardFooter>
-              <Button
-                onClick={() => handlePlanAction(plan.id)}
-                variant={getButtonVariant(plan)}
-                className="w-full"
-                disabled={isButtonDisabled(plan)}
-              >
-                {isProcessing && selectedPlan === plan.id ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Processing...
-                  </>
-                ) : (
-                  getButtonText(plan)
-                )}
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
       </div>
-
-      {/* Payment Form */}
-      {selectedPlan && plans.find((p) => p.id === selectedPlan)?.price > 0 && (
-        <div className="max-w-md mx-auto mt-16 p-6 border rounded-lg bg-card">
-          <h3 className="text-xl font-semibold mb-4 text-center">
-            Complete Your Purchase
-          </h3>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-sm font-medium mb-1"
-                >
-                  First Name
-                </label>
-                <input
-                  id="firstName"
-                  {...register("firstName")}
-                  className="w-full px-3 py-2 border rounded-md"
-                  placeholder="First Name"
-                />
-                {errors.firstName && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.firstName.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-sm font-medium mb-1"
-                >
-                  Last Name
-                </label>
-                <input
-                  id="lastName"
-                  {...register("lastName")}
-                  className="w-full px-3 py-2 border rounded-md"
-                  placeholder="Last Name"
-                />
-                {errors.lastName && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.lastName.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                readOnly
-                {...register("email")}
-                className="w-full px-3 py-2 border rounded-md bg-muted"
-                placeholder="your@email.com"
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-
-            <div className="bg-muted p-4 rounded-lg">
-              <div className="flex justify-between text-sm">
-                <span>Selected Plan:</span>
-                <span className="font-semibold">
-                  {plans.find((p) => p.id === selectedPlan)?.name}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm mt-1">
-                <span>Amount:</span>
-                <span className="font-bold">
-                  {formatPrice(
-                    plans.find((p) => p.id === selectedPlan)?.price || 0
-                  )}
-                </span>
-              </div>
-            </div>
-
-            <Button type="submit" className="w-full" disabled={isProcessing}>
-              {isProcessing ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Processing...
-                </>
-              ) : (
-                `Pay ${formatPrice(
-                  plans.find((p) => p.id === selectedPlan)?.price || 0
-                )}`
-              )}
-            </Button>
-
-            <p className="text-xs text-muted-foreground text-center">
-              You'll be redirected to Chapa for secure payment processing
-            </p>
-          </form>
+      <div className="container mx-auto px-4 py-6">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold tracking-tight mb-4">
+            Choose Your Plan
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Start with our free plan and upgrade as you grow. All plans include
+            core features with no hidden fees.
+          </p>
         </div>
-      )}
 
-      {/* Free Plan CTA */}
-      {selectedPlan &&
-        plans.find((p) => p.id === selectedPlan)?.price === 0 && (
-          <div className="text-center mt-8">
-            <Button onClick={() => router.push("/projects")} size="lg">
-              Get Started with Free Plan
-            </Button>
+        {/* Current Plan Badge */}
+        {userSubscription && (
+          <div className="text-center mb-20">
+            <Badge variant="secondary" className="px-4 py-2 text-sm">
+              Current Plan: {userSubscription.currentPlan}
+              {userSubscription.isActive &&
+                userSubscription.daysRemaining > 0 && (
+                  <span className="ml-2">
+                    • {userSubscription.daysRemaining} days remaining
+                  </span>
+                )}
+            </Badge>
           </div>
         )}
 
-      {/* FAQ Section */}
-      <div className="max-w-3xl mx-auto mt-24">
-        <h2 className="text-3xl font-bold text-center mb-12">
-          Frequently Asked Questions
-        </h2>
-        <div className="grid gap-6">
-          <div className="p-6 border rounded-lg">
-            <h3 className="font-semibold mb-2">Can I change plans later?</h3>
-            <p className="text-muted-foreground">
-              Yes! You can upgrade your plan at any time. For downgrades, please
-              contact support.
-            </p>
-          </div>
-          <div className="p-6 border rounded-lg">
-            <h3 className="font-semibold mb-2">Is there a free trial?</h3>
-            <p className="text-muted-foreground">
-              Our Free plan is always free with no time limits. Paid plans start
-              immediately after payment.
-            </p>
-          </div>
-          <div className="p-6 border rounded-lg">
-            <h3 className="font-semibold mb-2">
-              What payment methods do you accept?
-            </h3>
-            <p className="text-muted-foreground">
-              We accept all major payment methods through Chapa including credit
-              cards, mobile money, and bank transfers.
-            </p>
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {plans.map((plan) => (
+            <Card
+              key={plan.id}
+              className={`relative transition-all duration-200 hover:scale-105 hover:shadow-lg ${
+                selectedPlan === plan.id ? "ring-2 ring-primary" : ""
+              } ${
+                isCurrentPlan(plan.id) ? "ring-2 ring-green-500" : ""
+              } ${getPlanColor(plan.id)}`}
+            >
+              {/* Popular Badge for Pro */}
+              {plan.id === "pro" && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-blue-500 text-foreground px-4 py-2">
+                    Most Popular
+                  </Badge>
+                </div>
+              )}
+
+              {/* Current Plan Badge */}
+              {isCurrentPlan(plan.id) && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-green-500 text-foreground px-4 py-2">
+                    Current Plan
+                  </Badge>
+                </div>
+              )}
+
+              <CardHeader
+                className={`text-center pb-4 ${getPlanGradient(
+                  plan.id
+                )} rounded-t-lg`}
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="p-3 rounded-full bg-background">
+                    {getPlanIcon(plan.id)}
+                  </div>
+                </div>
+                <CardTitle className="text-2xl font-bold">
+                  {plan.name}
+                </CardTitle>
+                <p className="text-foreground">{plan.description}</p>
+
+                <div className="mt-4">
+                  <span className="text-4xl font-bold">
+                    {formatPrice(plan.price)}
+                  </span>
+                  {plan.price > 0 && (
+                    <span className="text-foreground">/month</span>
+                  )}
+                </div>
+              </CardHeader>
+
+              <CardContent className="">
+                <ul className="space-y-6 mb-20">
+                  {plan.features.map((feature, index) => (
+                    <li key={index} className="flex items-start">
+                      <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Plan Limits */}
+                <div className="mt-6 p-4 bg-muted rounded-lg">
+                  <h4 className="font-semibold text-sm mb-2">Plan Limits:</h4>
+                  <div className="space-y-1 text-xs text-muted-foreground">
+                    <div>
+                      • Projects:{" "}
+                      {plan.maxProjects === -1
+                        ? "Unlimited"
+                        : `${plan.maxProjects}/month`}
+                    </div>
+                    <div>
+                      • Commits:{" "}
+                      {plan.maxCommitsPerProject === -1
+                        ? "Unlimited"
+                        : `Up to ${plan.maxCommitsPerProject}/project`}
+                    </div>
+                    <div>
+                      • File Size:{" "}
+                      {plan.maxFileSizeMB === -1
+                        ? "Unlimited"
+                        : `Up to ${plan.maxFileSizeMB}MB`}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+
+              <CardFooter>
+                <Button
+                  onClick={() => handlePlanAction(plan.id)}
+                  variant={getButtonVariant(plan)}
+                  className="w-full"
+                  disabled={isButtonDisabled(plan)}
+                >
+                  {isProcessing && selectedPlan === plan.id ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Processing...
+                    </>
+                  ) : (
+                    getButtonText(plan)
+                  )}
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+
+        {/* Payment Form */}
+        {selectedPlan &&
+          plans.find((p) => p.id === selectedPlan)?.price > 0 && (
+            <div className="max-w-md mx-auto mt-16 p-6 border rounded-lg bg-card">
+              <h3 className="text-xl font-semibold mb-4 text-center">
+                Complete Your Purchase
+              </h3>
+
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      htmlFor="firstName"
+                      className="block text-sm font-medium mb-1"
+                    >
+                      First Name
+                    </label>
+                    <input
+                      id="firstName"
+                      {...register("firstName")}
+                      className="w-full px-3 py-2 border rounded-md"
+                      placeholder="First Name"
+                    />
+                    {errors.firstName && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.firstName.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="lastName"
+                      className="block text-sm font-medium mb-1"
+                    >
+                      Last Name
+                    </label>
+                    <input
+                      id="lastName"
+                      {...register("lastName")}
+                      className="w-full px-3 py-2 border rounded-md"
+                      placeholder="Last Name"
+                    />
+                    {errors.lastName && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.lastName.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium mb-1"
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    readOnly
+                    {...register("email")}
+                    className="w-full px-3 py-2 border rounded-md bg-muted"
+                    placeholder="your@email.com"
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="bg-muted p-4 rounded-lg">
+                  <div className="flex justify-between text-sm">
+                    <span>Selected Plan:</span>
+                    <span className="font-semibold">
+                      {plans.find((p) => p.id === selectedPlan)?.name}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm mt-1">
+                    <span>Amount:</span>
+                    <span className="font-bold">
+                      {formatPrice(
+                        plans.find((p) => p.id === selectedPlan)?.price || 0
+                      )}
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Processing...
+                    </>
+                  ) : (
+                    `Pay ${formatPrice(
+                      plans.find((p) => p.id === selectedPlan)?.price || 0
+                    )}`
+                  )}
+                </Button>
+
+                <p className="text-xs text-muted-foreground text-center">
+                  You 'll be redirected to Chapa for secure payment processing
+                </p>
+              </form>
+            </div>
+          )}
+
+        {/* Free Plan CTA */}
+        {selectedPlan &&
+          plans.find((p) => p.id === selectedPlan)?.price === 0 && (
+            <div className="text-center mt-8">
+              <Button onClick={() => router.push("/projects")} size="lg">
+                Get Started with Free Plan
+              </Button>
+            </div>
+          )}
+
+        {/* FAQ Section */}
+        <div className="max-w-3xl mx-auto mt-24">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Frequently Asked Questions
+          </h2>
+          <div className="grid gap-6">
+            <div className="p-6 border rounded-lg">
+              <h3 className="font-semibold mb-2">Can I change plans later?</h3>
+              <p className="text-muted-foreground">
+                Yes! You can upgrade your plan at any time. For downgrades,
+                please contact support.
+              </p>
+            </div>
+            <div className="p-6 border rounded-lg">
+              <h3 className="font-semibold mb-2">Is there a free trial?</h3>
+              <p className="text-muted-foreground">
+                Our Free plan is always free with no time limits. Paid plans
+                start immediately after payment.
+              </p>
+            </div>
+            <div className="p-6 border rounded-lg">
+              <h3 className="font-semibold mb-2">
+                What payment methods do you accept?
+              </h3>
+              <p className="text-muted-foreground">
+                We accept all major payment methods through Chapa including
+                credit cards, mobile money, and bank transfers.
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { DataTable } from "@/components/data-table";
 import { SectionCards } from "@/components/section-cards";
 import { toast } from "sonner";
+import { useAuthStore } from "@/stores/auth-store";
 
 interface DashboardData {
   summary: {
@@ -24,8 +25,25 @@ interface DashboardData {
     lastCommitDate: string | null;
   }>;
   recentActivity: {
-    commits: Array<any>;
-    notifications: Array<any>;
+    recentProjects: Array<{
+      id: string;
+      name: string;
+      status: string;
+      createdAt: string;
+    }>;
+    recentCommits: Array<{
+      id: string;
+      message: string;
+      hash?: string;
+      createdAt: string;
+      projectId: string;
+      isAiGenerated?: boolean;
+      status?: string;
+      project: {
+        name: string;
+        repoFullName: string;
+      };
+    }>;
   };
 }
 
@@ -47,10 +65,13 @@ export default function DashboardPage() {
   );
   const [projectStats, setProjectStats] = useState<ProjectStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { isAuthenticated } = useAuthStore();
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    if (isAuthenticated) {
+      console.log("✅ Dashboard - User authenticated, fetching data");
+      fetchDashboardData();
+    }
+  }, [isAuthenticated]);
 
   const fetchDashboardData = async () => {
     try {
@@ -58,7 +79,7 @@ export default function DashboardPage() {
 
       // Fetch dashboard overview
       const overviewResponse = await fetch(
-        "http://localhost:3001/api/dashboard/overview",
+        `${process.env.NEXT_PUBLIC_API_URL}/dashboard/overview`,
         {
           method: "GET",
           credentials: "include",
@@ -78,9 +99,9 @@ export default function DashboardPage() {
         setDashboardData(overviewResult.data);
       }
 
-      // Fetch project stats
+      // Fetch project stat
       const statsResponse = await fetch(
-        "http://localhost:3001/api/dashboard/stats",
+        `${process.env.NEXT_PUBLIC_API_URL}/dashboard/stats`,
         {
           method: "GET",
           credentials: "include",
@@ -96,7 +117,7 @@ export default function DashboardPage() {
           setProjectStats(statsResult.data);
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch dashboard data:", error);
       toast.error("Failed to load dashboard data");
     } finally {
@@ -124,7 +145,7 @@ function DashboardSkeleton() {
   return (
     <div className="space-y-6">
       {/* Cards Skeleton */}
-      <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+      <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="animate-pulse">
             <div className="h-32 rounded-lg bg-gray-200 dark:bg-gray-700"></div>

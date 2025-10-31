@@ -96,7 +96,7 @@ export default function ProjectDetailsPage() {
     try {
       setIsDeleting(true);
       const response = await fetch(
-        `http://localhost:3001/api/projects/${projectId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -122,7 +122,7 @@ export default function ProjectDetailsPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:3001/api/projects/${projectId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}`,
         {
           method: "GET",
           credentials: "include",
@@ -151,7 +151,7 @@ export default function ProjectDetailsPage() {
     try {
       setCommitsLoading(true);
       const response = await fetch(
-        `http://localhost:3001/api/projects/${projectId}/commits`,
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/commits`,
         {
           method: "GET",
           credentials: "include",
@@ -181,7 +181,7 @@ export default function ProjectDetailsPage() {
     try {
       setIsRetrying(true);
       const response = await fetch(
-        `http://localhost:3001/api/projects/${projectId}/retry`,
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/retry`,
         {
           method: "POST",
           credentials: "include",

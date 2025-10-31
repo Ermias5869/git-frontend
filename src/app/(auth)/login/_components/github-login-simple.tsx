@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,16 +10,28 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { circOut, motion } from "framer-motion";
 import { Github } from "lucide-react";
+import { RedirectManager } from "@/lib/redirect";
 
 export default function GitHubAuthPage() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const redirect = searchParams.get("redirect");
+    if (redirect) {
+      RedirectManager.setRedirectPath(redirect);
+    } else {
+      // Default to dashboard if no redirect specified
+      RedirectManager.setRedirectPath("/dashboard");
+    }
+  }, [searchParams]);
 
   const handleGitHubLogin = () => {
     setIsLoading(true);
-    window.location.href = "http://localhost:3001/api/auth/github";
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/github`;
   };
 
   const features = [
@@ -29,11 +41,15 @@ export default function GitHubAuthPage() {
   ];
 
   const listVariants = {
-    hidden: { opacity: 0, y: 10 },
+    hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: i * 0.15, duration: 0.5, ease: "easeOut" },
+      transition: {
+        delay: i * 0.2,
+        duration: 0.5,
+        ease: circOut, // ✅ instead of "easeOut"
+      },
     }),
   };
 

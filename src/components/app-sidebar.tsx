@@ -39,8 +39,8 @@ const data = {
       icon: IconBell,
     },
     {
-      title: "Profiles",
-      url: "/dashboard/profiles",
+      title: "Profile",
+      url: "/dashboard/profile",
       icon: IconUser,
     },
   ],
@@ -94,18 +94,13 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
+      title: "Back to Home",
+      url: "/",
       icon: IconHelp,
     },
     {
-      title: "Search",
-      url: "#",
+      title: "Contact Support",
+      url: "https://t.me/luna_com_saas",
       icon: IconSearch,
     },
   ],

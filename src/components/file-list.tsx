@@ -12,13 +12,16 @@ export default function ProjectGrid() {
     const fetchProjects = async () => {
       try {
         console.log("Fetching projects from API...");
-        const response = await fetch("http://localhost:3001/api/projects", {
-          method: "GET",
-          credentials: "include", // send cookies for JWT auth
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/projects`,
+          {
+            method: "GET",
+            credentials: "include", // send cookies for JWT auth
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         console.log("📡 API Response status:", response.status);
 

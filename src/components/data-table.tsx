@@ -197,16 +197,13 @@ export function DataTable({ dashboardData }: DataTableProps) {
     try {
       console.log("Retrying project:", projectId, projectName);
 
-      const response = await fetch(
-        `http://localhost:3001/api/projects/${projectId}/retry`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`/projects/${projectId}/retry`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const result = await response.json();
 
@@ -517,7 +514,7 @@ function UploadProjectDialog({
       });
 
       const response = await fetch(
-        `http://localhost:3001/api/projects/file/upload/${projectId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/file/upload/${projectId}`,
         {
           method: "POST",
           credentials: "include",

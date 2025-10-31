@@ -1,12 +1,13 @@
 // app/dashboard/layout.tsx
 "use client";
 import { ReactNode, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth-store";
 import { AppSidebar } from "@/components/app-sidebar";
 
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Loader2 } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -14,47 +15,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const {
-    user,
-    isAuthenticated,
-    isLoading,
-    initializeFromRedirect,
-    checkAuth,
-  } = useAuthStore();
-
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        // First priority: Check if we have user data from URL (GitHub OAuth redirect)
-        const userParam = searchParams.get("user");
-
-        if (userParam) {
-          // Case 1: Coming from GitHub OAuth redirect
-          const userData = JSON.parse(decodeURIComponent(userParam));
-          console.log(
-            "🚀 Storing user data from OAuth redirect:",
-            userData.username
-          );
-
-          // Store in Zustand and localStorage
-          initializeFromRedirect(userData);
-          localStorage.setItem("user", JSON.stringify(userData));
-
-          // Clean the URL immediately
-          window.history.replaceState({}, "", "/dashboard");
-        } else {
-          // Case 2: Check existing authentication
-          checkAuth();
-        }
-      } catch (error) {
-        console.error("Auth initialization error:", error);
-        router.push("/login");
-      }
-    };
-
-    initializeAuth();
-  }, [searchParams, initializeFromRedirect, checkAuth, router]);
+  const { user, isAuthenticated, isLoading } = useAuthStore();
 
   useEffect(() => {
     // Redirect to login if not authenticated (after processing everything)
@@ -66,11 +27,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Setting up your dashboard...</p>
-        </div>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+        <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
+        <p className="text-muted-foreground text-sm">
+          Setting up your dashboard...
+        </p>
       </div>
     );
   }

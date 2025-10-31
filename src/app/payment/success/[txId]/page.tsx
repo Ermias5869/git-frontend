@@ -6,14 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  CheckCircle,
-  AlertCircle,
-  Loader2,
-  ArrowRight,
-  FolderOpen,
-  Plus,
-} from "lucide-react";
+import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -66,7 +59,7 @@ export default function PaymentSuccess({
         console.log("Verifying payment with txId:", txId);
 
         const response = await fetch(
-          `http://localhost:3001/api/payment/verify?tx_ref=${txId}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/payment/verify?tx_ref=${txId}`,
           {
             method: "GET",
             headers: {

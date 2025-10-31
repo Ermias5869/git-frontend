@@ -13,7 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { useIsMobile } from "@/hooks/use-mobile";
+
 import {
   Card,
   CardAction,
@@ -22,12 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
@@ -43,7 +38,30 @@ interface ProjectData {
   projects: number;
   commits: number;
 }
-
+interface Project {
+  id: string;
+  name: string;
+  description?: string;
+  zipPath?: string;
+  repoFullName?: string;
+  repoUrl?: string;
+  branch?: string;
+  startDate?: string;
+  endDate?: string;
+  desiredCommitCount?: number;
+  status: string;
+  userId: string;
+  commits: Array<{ id: string }> | [];
+  createdAt: string;
+  updatedAt: string;
+  processingLockedUntil?: string;
+  processingStartedAt?: string;
+  processingEndedAt?: string;
+  errorMessage?: string;
+  _count?: {
+    commits: number;
+  };
+}
 interface ChartAreaInteractiveProps {
   projectStats?: {
     projectStatus: Array<{ status: string; _count: { id: number } }>;
@@ -66,7 +84,6 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ChartAreaInteractive({}: ChartAreaInteractiveProps) {
-  const isMobile = useIsMobile();
   const [timeRange, setTimeRange] = React.useState("90d"); // Default to 90d to show all data
   const [chartType, setChartType] = React.useState<"area" | "bar">("area");
   const [chartData, setChartData] = React.useState<ProjectData[]>([]);
@@ -80,13 +97,16 @@ export function ChartAreaInteractive({}: ChartAreaInteractiveProps) {
         setIsLoading(true);
 
         console.log("🔄 Fetching projects for chart...");
-        const response = await fetch("http://localhost:3001/api/projects", {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/projects`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         console.log("📡 Chart API Response status:", response.status);
 
@@ -107,7 +127,7 @@ export function ChartAreaInteractive({}: ChartAreaInteractiveProps) {
         } else {
           throw new Error(result.error || "Failed to fetch projects");
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("❌ Failed to fetch project data:", error);
         toast.error("Failed to load project analytics - using sample data");
         // Fallback to sample data if API fails
@@ -122,7 +142,7 @@ export function ChartAreaInteractive({}: ChartAreaInteractiveProps) {
   }, []);
 
   // Process real project data from backend
-  const processProjectData = (projects: any[]): ProjectData[] => {
+  const processProjectData = (projects: Project[]): ProjectData[] => {
     if (!projects || projects.length === 0) {
       console.log("No projects found, using fallback data");
       return generateFallbackData();
@@ -286,7 +306,7 @@ export function ChartAreaInteractive({}: ChartAreaInteractiveProps) {
               if (value) setChartType(value);
             }}
             variant="outline"
-            className="hidden *:data-[slot=toggle-group-item]:!px-3 @[540px]/card:flex"
+            className="hidden *:data-[slot=toggle-group-item]:px-3! @[767px]/card:flex"
           >
             <ToggleGroupItem value="area">Area</ToggleGroupItem>
             <ToggleGroupItem value="bar">Bar</ToggleGroupItem>
@@ -300,7 +320,7 @@ export function ChartAreaInteractive({}: ChartAreaInteractiveProps) {
                 if (value) setTimeRange(value);
               }}
               variant="outline"
-              className="hidden *:data-[slot=toggle-group-item]:!px-3 @[767px]/card:flex"
+              className="hidden *:data-[slot=toggle-group-item]:px-3! @[767px]/card:flex"
             >
               <ToggleGroupItem value="90d">3M</ToggleGroupItem>
               <ToggleGroupItem value="30d">1M</ToggleGroupItem>
@@ -358,8 +378,8 @@ export function ChartAreaInteractive({}: ChartAreaInteractiveProps) {
                       x2="0"
                       y2="1"
                     >
-                      <stop offset="5%" stop="#8884d8" stopOpacity={0.8} />
-                      <stop offset="95%" stop="#8884d8" stopOpacity={0} />
+                      <stop offset="5%" stopOpacity={0.8} />
+                      <stop offset="95%" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient
                       id="colorCommits"
@@ -368,8 +388,8 @@ export function ChartAreaInteractive({}: ChartAreaInteractiveProps) {
                       x2="0"
                       y2="1"
                     >
-                      <stop offset="5%" stop="#82ca9d" stopOpacity={0.8} />
-                      <stop offset="95%" stop="#82ca9d" stopOpacity={0} />
+                      <stop offset="5%" stopOpacity={0.8} />
+                      <stop offset="95%" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" />

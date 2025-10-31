@@ -146,14 +146,17 @@ export function CreateProjectDialog() {
     setIsLoading(true);
     try {
       // Call your backend API for step 1
-      const response = await fetch("http://localhost:3001/api/projects", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/projects`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(data),
+        }
+      );
 
       const result = await response.json();
 
@@ -188,7 +191,7 @@ export function CreateProjectDialog() {
       console.log("🔍 Debug - Project ID type:", typeof projectId);
 
       // Log the exact URL we're constructing
-      const API_URL = `http://localhost:3001/api/projects/file/upload/${projectId}`;
+      const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/projects/file/upload/${projectId}`;
       console.log("🌐 Exact URL being called:", API_URL);
 
       const formData = new FormData();

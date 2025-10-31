@@ -7,7 +7,7 @@ import { CreateProjectDialog } from "@/components/create-project-dialog";
 import ProjectGrid from "@/components/file-list";
 
 export default function DashboardPage() {
-  const { user, isAuthenticated, isLoading } = useAuthStore();
+  const { isAuthenticated, isLoading } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
