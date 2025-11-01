@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -14,9 +14,9 @@ import { circOut, motion } from "framer-motion";
 import { Github } from "lucide-react";
 import { RedirectManager } from "@/lib/redirect";
 
-export default function GitHubAuthPage() {
+// Create a separate component that uses useSearchParams
+function GitHubAuthContent() {
   const [isLoading, setIsLoading] = useState(false);
-
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function GitHubAuthPage() {
       transition: {
         delay: i * 0.2,
         duration: 0.5,
-        ease: circOut, // ✅ instead of "easeOut"
+        ease: circOut,
       },
     }),
   };
@@ -128,5 +128,23 @@ export default function GitHubAuthPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function GitHubAuthPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="text-center">
+            <div className="h-8 w-8 border-2 border-current border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <GitHubAuthContent />
+    </Suspense>
   );
 }

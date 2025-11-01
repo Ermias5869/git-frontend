@@ -25,13 +25,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, Upload } from "lucide-react";
+import { CalendarIcon, Upload, Lock, Unlock } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -46,6 +47,7 @@ const step1Schema = z.object({
     .string()
     .max(255, "Description must be less than 255 characters")
     .optional(),
+  private: z.boolean().default(true),
 });
 
 // Step 2 Schema - Upload File and Set Timeline
@@ -70,8 +72,11 @@ const step2Schema = z
       path: ["endDate"],
     }
   );
-
-type Step1Data = z.infer<typeof step1Schema>;
+type Step1Data = {
+  name: string;
+  description?: string;
+  private: boolean;
+};
 type Step2Data = z.infer<typeof step2Schema>;
 
 export function CreateProjectDialog() {
@@ -79,14 +84,17 @@ export function CreateProjectDialog() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [projectId, setProjectId] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // Step 1 Form
   const step1Form = useForm<Step1Data>({
-    resolver: zodResolver(step1Schema),
+    resolver: zodResolver(step1Schema) as any,
     defaultValues: {
       name: "",
       description: "",
+      private: true,
     },
+    mode: "onChange",
   });
 
   // Step 2 Form
@@ -97,7 +105,9 @@ export function CreateProjectDialog() {
     },
   });
 
-  // In your create-project-dialog.tsx - update handleFileChange
+  // Watch the private field to show dynamic icon
+  const isPrivate = step1Form.watch("private");
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
@@ -108,7 +118,6 @@ export function CreateProjectDialog() {
     });
 
     if (file) {
-      // Match the same validation as backend
       const allowedMimeTypes = [
         "application/zip",
         "application/x-zip",
@@ -145,7 +154,8 @@ export function CreateProjectDialog() {
   const handleStep1Submit = async (data: Step1Data) => {
     setIsLoading(true);
     try {
-      // Call your backend API for step 1
+      console.log("📤 Creating repository with data:", data);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/projects`,
         {
@@ -163,7 +173,11 @@ export function CreateProjectDialog() {
       if (result.success) {
         setProjectId(result.data.id);
         setStep(2);
-        toast.success("Project created successfully!");
+        toast.success(
+          `Repository created successfully (${
+            data.private ? "Private" : "Public"
+          })!`
+        );
       } else {
         if (result.code === "PLAN_LIMIT_EXCEEDED") {
           toast.error(result.error);
@@ -188,9 +202,6 @@ export function CreateProjectDialog() {
     setIsLoading(true);
     try {
       console.log("🔍 Debug - Project ID:", projectId);
-      console.log("🔍 Debug - Project ID type:", typeof projectId);
-
-      // Log the exact URL we're constructing
       const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/projects/file/upload/${projectId}`;
       console.log("🌐 Exact URL being called:", API_URL);
 
@@ -208,11 +219,6 @@ export function CreateProjectDialog() {
           "desiredCommitCount",
           data.desiredCommitCount.toString()
         );
-      }
-
-      console.log("📋 FormData entries:");
-      for (let [key, value] of formData.entries()) {
-        console.log(`  ${key}:`, value);
       }
 
       const response = await fetch(API_URL, {
@@ -240,7 +246,12 @@ export function CreateProjectDialog() {
       console.log("✅ Step 2 Success:", result);
 
       if (result.success) {
-        toast.success("Project setup completed!");
+        toast.success(
+          "Project processing started! We'll send you an email when it's complete."
+        );
+
+        // Close dialog immediately and reset everything
+        setDialogOpen(false);
         setStep(1);
         setProjectId(null);
         setSelectedFile(null);
@@ -251,7 +262,7 @@ export function CreateProjectDialog() {
       }
     } catch (error) {
       console.error("❌ Step 2 Error Details:", error);
-      toast.error(error.message || "Upload failed");
+      error instanceof Error ? error.message : "Upload failed";
     } finally {
       setIsLoading(false);
     }
@@ -261,8 +272,20 @@ export function CreateProjectDialog() {
     setStep(1);
   };
 
+  const handleDialogOpenChange = (open: boolean) => {
+    setDialogOpen(open);
+    if (!open) {
+      // Reset everything when dialog closes
+      setStep(1);
+      setProjectId(null);
+      setSelectedFile(null);
+      step1Form.reset();
+      step2Form.reset();
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
         <Button>Create New Project</Button>
       </DialogTrigger>
@@ -350,6 +373,37 @@ export function CreateProjectDialog() {
                 )}
               />
 
+              <FormField
+                control={step1Form.control}
+                name="private"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base flex items-center gap-2">
+                        {isPrivate ? (
+                          <Lock className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <Unlock className="h-4 w-4 text-blue-600" />
+                        )}
+                        {isPrivate ? "Private " : "Public "}
+                        Repository
+                      </FormLabel>
+                      <FormDescription>
+                        {isPrivate
+                          ? "Only you and collaborators can see this repository"
+                          : "Anyone on the internet can see this repository"}
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
               <DialogFooter>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading ? "Creating..." : "Create Repository"}
@@ -379,7 +433,7 @@ export function CreateProjectDialog() {
                   />
                   <label htmlFor="project-file" className="cursor-pointer">
                     {selectedFile ? (
-                      <p className="text-xs  mt-2">{selectedFile.name}</p>
+                      <p className="text-xs mt-2">{selectedFile.name}</p>
                     ) : (
                       <>
                         <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
@@ -480,7 +534,7 @@ export function CreateProjectDialog() {
                 name="desiredCommitCount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Desired Commit </FormLabel>
+                    <FormLabel>Desired Commit Count</FormLabel>
                     <FormControl>
                       <Input
                         type="number"

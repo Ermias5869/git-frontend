@@ -628,7 +628,10 @@ export default function PricingPage() {
 
         {/* Payment Form */}
         {selectedPlan &&
-          plans.find((p) => p.id === selectedPlan)?.price > 0 && (
+          (() => {
+            const selectedPlanData = plans.find((p) => p.id === selectedPlan);
+            return selectedPlanData && selectedPlanData.price > 0;
+          })() && (
             <div className="max-w-md mx-auto mt-16 p-6 border rounded-lg bg-card">
               <h3 className="text-xl font-semibold mb-4 text-center">
                 Complete Your Purchase

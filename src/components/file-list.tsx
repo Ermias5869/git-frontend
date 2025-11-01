@@ -4,8 +4,30 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+// Add this interface
+interface Project {
+  id: string;
+  name: string;
+  description?: string;
+  zipPath?: string;
+  repoFullName?: string;
+  repoUrl?: string;
+  branch?: string;
+  startDate?: string;
+  endDate?: string;
+  desiredCommitCount?: number;
+  status: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  processingLockedUntil?: string;
+  processingStartedAt?: string;
+  processingEndedAt?: string;
+  errorMessage?: string;
+}
 export default function ProjectGrid() {
-  const [projects, setProjects] = useState([]);
+  // Fix this line - specify the type
+  const [projects, setProjects] = useState<Project[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {

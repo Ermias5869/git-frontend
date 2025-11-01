@@ -1,5 +1,6 @@
 // app/payment/success/[txId]/page.tsx
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -30,25 +31,15 @@ interface VerificationData {
 export default function PaymentSuccess({
   params,
 }: {
-  params: Promise<{ txId: string }>;
+  params: { txId: string };
 }) {
   const router = useRouter();
-  const [txId, setTxId] = useState<string | null>(null);
+  const txId = params.txId;
   const [verification, setVerification] = useState<VerificationData | null>(
     null
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Await the params
-    const getParams = async () => {
-      const resolvedParams = await params;
-      setTxId(resolvedParams.txId);
-    };
-
-    getParams();
-  }, [params]);
 
   useEffect(() => {
     if (!txId) return;

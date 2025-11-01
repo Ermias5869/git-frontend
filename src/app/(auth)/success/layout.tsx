@@ -1,4 +1,4 @@
-// app/layout.tsx
+// app/(auth)/success/layout.tsx
 "use client";
 import { ReactNode, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
