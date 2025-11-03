@@ -31,16 +31,22 @@ interface VerificationData {
 export default function PaymentSuccess({
   params,
 }: {
-  params: { txId: string };
+  params: Promise<{ txId: string }>;
 }) {
   const router = useRouter();
-  const txId = params.txId;
+  const [txId, setTxId] = useState<string | null>(null);
   const [verification, setVerification] = useState<VerificationData | null>(
     null
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  useEffect(() => {
+    async function unwrapParams() {
+      const unwrappedParams = await params;
+      setTxId(unwrappedParams.txId);
+    }
+    unwrapParams();
+  }, [params]);
   useEffect(() => {
     if (!txId) return;
 
