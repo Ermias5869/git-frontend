@@ -100,7 +100,7 @@ const data = {
     },
     {
       title: "Contact Support",
-      url: "https://t.me/luna_com_saas",
+      url: "https://t.me/Gitify_com_saas",
       icon: IconSearch,
     },
   ],

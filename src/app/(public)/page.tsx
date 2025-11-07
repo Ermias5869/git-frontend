@@ -15,15 +15,6 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function Home() {
@@ -51,7 +42,7 @@ export default function Home() {
       <MaxWidthWrapper className="mb-12 mt-15 sm:mt-30 flex flex-col items-center justify-center text-center">
         <div className="mx-auto mb-4 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-border bg-background px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 hover:bg-background/50">
           <p className="text-sm font-semibold text-foreground">
-            Luna is now live!
+            Gitify is now live!
           </p>
         </div>
         <h1 className="max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl">
@@ -104,7 +95,7 @@ export default function Home() {
                   <div className="rounded-md bg-card shadow-2xl ring-1 ring-border flex items-center justify-center">
                     <Image
                       src="/dashboard.png"
-                      alt="Luna App Screenshot"
+                      alt="Gitify App Screenshot"
                       width={720}
                       height={400}
                       className="w-full h-auto rounded-md border border-border shadow-lg"

@@ -42,7 +42,7 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between border-border px-4">
           <Link href="/" className="flex z-40 font-semibold items-center gap-2">
             <span className="text-2xl ml-2 font-bold text-foreground">
-              Luna
+              Gitify
             </span>
           </Link>
 
