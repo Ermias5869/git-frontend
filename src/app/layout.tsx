@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -14,14 +14,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 0.75,
-  minimumScale: 0.75,
-  maximumScale: 0.75,
-  userScalable: false,
-};
 
 export const metadata: Metadata = {
   title: "Gitify - Generate Realistic Git History from 2008-2025",
@@ -73,6 +65,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* ADD THE VIEWPORT TAG MANUALLY */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=0.75, minimum-scale=0.75, maximum-scale=0.75, user-scalable=no"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
