@@ -1,0 +1,25 @@
+{
+  "name": "Gitify - AI-Powered Git Commit History",
+  "short_name": "Gitify",
+  "description": "Generate realistic Git commit histories with AI from 2008-2025",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "categories": ["developer tools", "productivity"],
+  "lang": "en"
+}
