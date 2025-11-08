@@ -16,12 +16,46 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gitify - AI-Powered Git Commit History",
+  title: "Gitify - Generate Realistic Git History from 2008-2025",
   description:
-    "Transform your empty repository into a professional project history with AI-powered commits.",
+    "✨ Make your GitHub profile shine! Generate authentic-looking commit histories from 2008-2025. AI-generated commits • Realistic patterns • Professional timelines. Perfect for bootcamp grads, job seekers, and portfolios.",
+  keywords:
+    "git history, github commits, AI commits, backdate commits, portfolio projects, job seeker github, bootcamp projects",
+  authors: [{ name: "Gitify" }],
+  creator: "Gitify",
+  publisher: "Gitify",
+  robots: "index, follow",
   icons: {
     icon: "/logo.jpg",
+    shortcut: "/logo.jpg",
+    apple: "/logo.jpg",
   },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://lunaa-beta.vercel.app/",
+    title: "Gitify - Generate Realistic Git History from 2008-2025",
+    description:
+      "✨ Make your GitHub profile shine! Generate authentic-looking commit histories from 2008-2025. AI-generated commits • Realistic patterns • Professional timelines.",
+    siteName: "Gitify",
+    images: [
+      {
+        url: "/og-image.png", // Make sure this file exists in /public
+        width: 1200,
+        height: 630,
+        alt: "Gitify - AI-Powered Git Commit History Generator",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gitify - Generate Realistic Git History from 2008-2025",
+    description:
+      "✨ Make your GitHub profile shine! Generate authentic-looking commit histories from 2008-2025.",
+    images: ["/og-image.png"], // Same image as Open Graph
+    creator: "@gitify", // Optional: Add your Twitter handle
+  },
+  manifest: "/manifest.json", // Optional: for PWA
 };
 
 export default function RootLayout({
