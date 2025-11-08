@@ -197,13 +197,16 @@ export function DataTable({ dashboardData }: DataTableProps) {
     try {
       console.log("Retrying project:", projectId, projectName);
 
-      const response = await fetch(`/projects/${projectId}/retry`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/retry`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const result = await response.json();
 

@@ -276,7 +276,7 @@ export default function ProjectDetailsPage() {
             The project you're looking for doesn't exist.
           </p>
           <Button asChild>
-            <a href="/projects">Back to Projects</a>
+            <a href="/dashboard/create">Back to Projects</a>
           </Button>
         </div>
       </div>

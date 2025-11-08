@@ -344,7 +344,7 @@ export default function PricingPage() {
     // If it's free plan
     if (selectedPlanData.price === 0) {
       toast.info("Free plan is automatically activated");
-      router.push("/projects");
+      router.push("/dashboard");
       return;
     }
 
@@ -373,7 +373,7 @@ export default function PricingPage() {
     // Don't process free plan through payment
     if (selectedPlanData.price === 0) {
       toast.info("Free plan is automatically activated");
-      router.push("/projects");
+      router.push("/dashboard");
       return;
     }
 
@@ -747,7 +747,7 @@ export default function PricingPage() {
         {selectedPlan &&
           plans.find((p) => p.id === selectedPlan)?.price === 0 && (
             <div className="text-center mt-8">
-              <Button onClick={() => router.push("/projects")} size="lg">
+              <Button onClick={() => router.push("/dashboard")} size="lg">
                 Get Started with Free Plan
               </Button>
             </div>

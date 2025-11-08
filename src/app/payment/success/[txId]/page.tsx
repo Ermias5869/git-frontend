@@ -167,7 +167,7 @@ export default function PaymentSuccess({
                   Retry Verification
                 </Button>
                 <Button
-                  onClick={() => router.push("/projects")}
+                  onClick={() => router.push("/dashboard")}
                   variant="outline"
                   className="flex-1"
                 >
