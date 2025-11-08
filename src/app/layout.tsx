@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://lunaa-beta.vercel.app/",
+    url: "https://gitify-ai.vercel.app/",
     title: "Gitify - Generate Realistic Git History from 2008-2025",
     description:
       "✨ Make your GitHub profile shine! Generate authentic-looking commit histories from 2008-2025. AI-generated commits • Realistic patterns • Professional timelines.",
