@@ -72,7 +72,11 @@ export default function ProjectGrid() {
 
   // Loading state
   if (loading) {
-    return <Spinner />;
+    return (
+      <div className="flex items-center justify-center h-screen w-full">
+        <Spinner />
+      </div>
+    );
   }
 
   // Error state
