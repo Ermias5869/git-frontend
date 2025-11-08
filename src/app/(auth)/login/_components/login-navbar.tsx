@@ -30,7 +30,7 @@ export function LoginNavbar() {
 
             <Link href="/" className="flex items-center space-x-2">
               <Home className="h-6 w-6 text-green-600" />
-              <span className="font-bold text-xl">CommitForge</span>
+              <span className="font-bold text-xl">Gitify</span>
             </Link>
           </div>
 
