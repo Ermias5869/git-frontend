@@ -111,27 +111,7 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
-/* Remove all previous zoom styles and add this instead */
 
-/* Container-based zoom for desktop */
-@media screen and (min-width: 768px) {
-  .zoom-container {
-    transform: scale(0.85); /* Slightly adjusted to 85% for better appearance */
-    transform-origin: top center;
-    width: 117.65%; /* 100 / 0.85 */
-    min-height: 117.65vh;
-    margin: 0 auto;
-  }
-}
-
-/* Mobile stays normal */
-@media screen and (max-width: 767px) {
-  .zoom-container {
-    transform: none;
-    width: 100%;
-    min-height: 100vh;
-  }
-}
 @layer base {
   * {
     @apply border-border outline-ring/50;

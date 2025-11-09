@@ -4,7 +4,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/providers/auth-provider";
-import ZoomLayout from "@/components/ZoomLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -67,9 +66,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* ADD THE VIEWPORT TAG MANUALLY */}
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=0.85, minimum-scale=0.85, maximum-scale=0.85, user-scalable=no"
+          content="width=device-width, initial-scale=0.75, minimum-scale=0.75, maximum-scale=0.75, user-scalable=no"
         />
       </head>
       <body
@@ -82,11 +82,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <ZoomLayout>
-              {" "}
-              {/* Wrap with zoom container */}
-              {children}
-            </ZoomLayout>
+            {children}
             <Toaster />
           </AuthProvider>
         </ThemeProvider>
