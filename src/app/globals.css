@@ -130,10 +130,10 @@
 /* Keep normal on mobile */
 @media screen and (min-width: 768px) {
   html {
-    transform: scale(0.97);
+    transform: scale(0.985);
     transform-origin: top left;
-    width: 103.09%; /* Compensate for scaling: 100 / 0.97 = 103.09% */
-    height: 103.09vh;
+    width: 101.52%; /* Compensate for scaling: 100 / 0.985 = 101.52% */
+    height: 101.52vh;
     overflow-x: hidden;
   }
 
