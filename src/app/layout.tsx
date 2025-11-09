@@ -65,13 +65,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* ADD THE VIEWPORT TAG MANUALLY */}
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=0.75, minimum-scale=0.75, maximum-scale=0.75, user-scalable=no"
-        />
-      </head>
+      <head />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
