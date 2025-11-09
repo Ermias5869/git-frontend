@@ -114,16 +114,25 @@
 /* Make desktop look like 75% browser zoom */
 @media screen and (min-width: 768px) {
   html {
-    transform: scale(0.75);
+    transform: scale(0.85);
     transform-origin: top left;
-    width: 133.33%; /* Compensate for scaling: 100 / 0.75 */
-    height: 133.33vh;
+    width: 117.65%; /* Compensate for scaling: 100 / 0.85 = 117.65% */
+    height: 117.65vh;
     overflow-x: hidden;
   }
 
   body {
     width: 100%;
     height: 100%;
+  }
+}
+
+/* Keep normal on mobile */
+@media screen and (max-width: 767px) {
+  html {
+    transform: none;
+    width: 100%;
+    height: auto;
   }
 }
 
