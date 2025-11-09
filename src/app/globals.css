@@ -112,6 +112,28 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+/* ADD THIS SECTION FOR 75% ZOOM */
+/* Force 75% zoom on all desktop screens */
+@media screen and (min-width: 768px) {
+  body {
+    zoom: 0.75;
+    -moz-transform: scale(0.75);
+    -moz-transform-origin: 0 0;
+    -o-transform: scale(0.75);
+    -o-transform-origin: 0 0;
+    -webkit-transform: scale(0.75);
+    -webkit-transform-origin: 0 0;
+  }
+}
+
+/* Keep normal zoom on mobile */
+@media screen and (max-width: 767px) {
+  body {
+    zoom: 1;
+    transform: none;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
