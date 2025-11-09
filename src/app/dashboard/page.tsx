@@ -126,17 +126,21 @@ export default function DashboardPage() {
   };
 
   if (isLoading) {
-    return <DashboardSkeleton />;
+    return (
+      <div className="h-full overflow-y-auto">
+        <DashboardSkeleton />
+      </div>
+    );
   }
 
   return (
-    <>
+    <div className="h-full overflow-y-auto space-y-6 pb-6">
       <SectionCards dashboardData={dashboardData} />
       <div className="px-4 lg:px-6">
         <ChartAreaInteractive projectStats={projectStats} />
       </div>
       <DataTable dashboardData={dashboardData} />
-    </>
+    </div>
   );
 }
 
