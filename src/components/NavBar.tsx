@@ -38,44 +38,54 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="sticky h-16 w-full border-border bg-background/75 backdrop-blur-lg transition-all">
-        <div className="flex h-16 items-center justify-between border-border px-4">
-          <Link href="/" className="flex z-40 font-semibold items-center gap-2">
-            <span className="text-2xl ml-2 font-bold text-foreground">
-              Gitify
-            </span>
-          </Link>
-
-          {/* Desktop Navigation - EXACTLY like your original */}
-          <div className="hidden md:flex items-center space-x-4">
+      {/* Outer container to center the navbar */}
+      <div className="sticky top-0 z-50 w-full">
+        {/* Centered navbar with transparent background and border */}
+        <nav className="mx-auto w-9/12 max-w-7xl mt-4 rounded-2xl border border-border/50 bg-background/20 backdrop-blur-xl transition-all">
+          <div className="flex h-16 items-center justify-between px-6">
             <Link
-              href="/pricing"
-              className={buttonVariants({
-                variant: "ghost",
-                size: "sm",
-              })}
+              href="/"
+              className="flex z-40 font-semibold items-center gap-2"
             >
-              Pricing
+              <span className="text-2xl text-foreground">Gitify</span>
             </Link>
-            <Button onClick={handleGetStarted} size="lg">
-              Get Started Free
-            </Button>
-            <ModeToggle />
-          </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center space-x-2">
-            <ModeToggle />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleMobileMenu}
-              className="relative z-50"
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </Button>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Link
+                href="/pricing"
+                className={buttonVariants({
+                  variant: "ghost",
+                  size: "sm",
+                  className: "hover:bg-background/30",
+                })}
+              >
+                Pricing
+              </Link>
+              <Button
+                onClick={handleGetStarted}
+                size="lg"
+                className="bg-foreground text-background hover:bg-foreground/90"
+              >
+                Get Started Free
+              </Button>
+              <ModeToggle />
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="flex md:hidden items-center space-x-2">
+              <ModeToggle />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleMobileMenu}
+                className="relative z-50 hover:bg-background/30"
+              >
+                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </Button>
+            </div>
           </div>
-        </div>
+        </nav>
 
         {/* Mobile Menu - Only render after mount */}
         {isMounted && (
@@ -91,16 +101,21 @@ export function Navbar() {
             {/* Mobile Menu Panel */}
             <div
               className={`
-              fixed top-0 right-0 h-full w-80 max-w-[85vw] border-l border-border 
-              shadow-xl z-50 md:hidden
-              transition-transform duration-300 ease-in-out
-              ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"}
-            `}
+                fixed top-0 right-0 h-full w-80 max-w-[85vw] border-l border-border/50 
+                bg-background/95 backdrop-blur-xl z-50 md:hidden
+                transition-transform duration-300 ease-in-out
+                ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"}
+              `}
             >
               <div className="flex flex-col h-full pt-16 p-6">
                 {/* Close button */}
                 <div className="absolute top-4 right-4">
-                  <Button variant="ghost" size="icon" onClick={closeMobileMenu}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={closeMobileMenu}
+                    className="hover:bg-background/30"
+                  >
                     <X size={24} />
                   </Button>
                 </div>
@@ -112,8 +127,9 @@ export function Navbar() {
                       closeMobileMenu();
                       router.push("/pricing");
                     }}
+                    variant="ghost"
                     size="lg"
-                    className="h-12 text-base font-semibold"
+                    className="h-12 text-base font-semibold justify-start hover:bg-background/30"
                   >
                     Pricing
                   </Button>
@@ -123,7 +139,7 @@ export function Navbar() {
                       handleGetStarted();
                     }}
                     size="lg"
-                    className="h-12 text-base font-semibold"
+                    className="h-12 text-base font-semibold bg-foreground text-background hover:bg-foreground/90"
                   >
                     Get Started Free
                   </Button>
@@ -135,7 +151,7 @@ export function Navbar() {
             </div>
           </>
         )}
-      </nav>
+      </div>
 
       {/* Prevent body scroll when mobile menu is open */}
       {isMounted && isMobileMenuOpen && (
