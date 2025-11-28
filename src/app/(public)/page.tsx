@@ -523,12 +523,12 @@ export default function Home() {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center text-white"
+            className="text-center text-foreground"
           >
             <h2 className="text-5xl font-bold mb-6">
               Ready to Transform Your Git History?
             </h2>
-            <p className="text-xl mb-8 text-green-100 max-w-2xl mx-auto">
+            <p className="text-xl mb-8 text-foreground max-w-2xl mx-auto">
               Join thousands of developers who are already creating
               professional, AI-powered commit histories with Gitify.
             </p>
@@ -536,29 +536,27 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button
                 onClick={handleGetStarted}
-                className="group inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-sm font-medium text-green-600 transition-all hover:scale-105 hover:shadow-2xl"
+                className="group inline-flex items-center justify-center rounded-full bg-foreground px-8 py-4 text-sm font-medium text-primary-foreground transition-all hover:scale-105 hover:shadow-2xl"
               >
-                <Rocket className="mr-2 h-5 w-5" />
                 {isAuthenticated ? "Go to Dashboard" : "Start Free Trial"}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>
 
-              <button className="group inline-flex items-center justify-center rounded-full border border-green-400 bg-transparent px-8 py-4 text-sm font-medium text-white transition-all hover:scale-105 hover:bg-white/10">
+              <button className="group inline-flex items-center justify-center rounded-full border text-foreground bg-primary-foreground px-8 py-4 text-sm font-medium text-foregroundtransition-all hover:scale-105 hover:bg-white/10">
                 <Play className="mr-2 h-5 w-5" />
                 Watch Demo
               </button>
             </div>
 
-            <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-green-100 text-sm">
-              <div className="flex items-center">
+            <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4  text-sm">
+              <div className="flex items-center text-foreground">
                 <CheckCircle className="w-4 h-4 mr-2" />
                 No credit card required
               </div>
-              <div className="flex items-center">
-                <CheckCircle className="w-4 h-4 mr-2" />
-                14-day free trial
+              <div className="flex items-center text-foreground">
+                <CheckCircle className="w-4 h-4 mr-2" />1 project free trial
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center text-foreground">
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Cancel anytime
               </div>
