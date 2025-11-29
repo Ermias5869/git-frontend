@@ -225,10 +225,16 @@ export default function Home() {
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </button>
 
-          <button className="group inline-flex items-center justify-center rounded-full border border-border bg-background/80 px-8 py-4 text-sm font-medium text-foreground backdrop-blur transition-all hover:scale-105 hover:shadow-xl">
-            <Play className="mr-2 h-5 w-5" />
-            Watch Demo
-          </button>
+          <a
+            href="https://1drv.ms/v/c/8cf1916ba56e780e/EcVVPfE9e_VOsa1CTBCA27YBu8ugXycLKb-_9E74_8woMQ?e=SRxHo6"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button className="group inline-flex items-center justify-center rounded-full border border-border bg-background/80 px-8 py-4 text-sm font-medium text-foreground backdrop-blur transition-all hover:scale-105 hover:shadow-xl">
+              <Play className="mr-2 h-5 w-5" />
+              Watch Demo
+            </button>
+          </a>
         </motion.div>
 
         {!isAuthenticated && (
@@ -542,10 +548,16 @@ export default function Home() {
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>
 
-              <button className="group inline-flex items-center justify-center rounded-full border text-foreground bg-primary-foreground px-8 py-4 text-sm font-medium text-foregroundtransition-all hover:scale-105 hover:bg-white/10">
-                <Play className="mr-2 h-5 w-5" />
-                Watch Demo
-              </button>
+              <a
+                href="https://1drv.ms/v/c/8cf1916ba56e780e/EcVVPfE9e_VOsa1CTBCA27YBu8ugXycLKb-_9E74_8woMQ?e=SRxHo6"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button className="group inline-flex items-center justify-center rounded-full border border-border bg-background/80 px-8 py-4 text-sm font-medium text-foreground backdrop-blur transition-all hover:scale-105 hover:shadow-xl">
+                  <Play className="mr-2 h-5 w-5" />
+                  Watch Demo
+                </button>
+              </a>
             </div>
 
             <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4  text-sm">
