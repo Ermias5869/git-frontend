@@ -1,4 +1,5 @@
 // app/payment/success/[txId]/page.tsx
+//PAYMENT
 "use client";
 export const dynamic = "force-dynamic";
 
